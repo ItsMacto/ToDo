@@ -1,4 +1,4 @@
-from database import DB
+from db.database import DB
 
 
 def addTask(title, complete, description = None, due_date = None):
@@ -31,7 +31,7 @@ def completeTask(task_id):
             WHERE id = ?
         ''', (task_id,))
 
-def uncompleteTask(task_id):
+def unccmpleteTask(task_id):
     with DB() as cursor:
         cursor.execute('''
             UPDATE tasks
@@ -135,7 +135,15 @@ def getDueThisMonthTasks():
             WHERE due_date >= date('now') AND due_date < date('now', '+1 month') AND completed = 0
         ''')
         return cursor.fetchall()
-    
+
+def getFutureTasks():
+    with DB() as cursor:
+        cursor.execute('''
+            SELECT * FROM tasks
+            WHERE due_date >= date('now') AND completed = 0
+        ''')
+        return cursor.fetchall()
+
 def getByDescription(description):
     with DB() as cursor:
         cursor.execute('''
